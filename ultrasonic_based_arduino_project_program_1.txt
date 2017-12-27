@@ -1,0 +1,149 @@
+#include <dht.h>
+#include<LiquidCrystal.h>
+#define trigPin 10
+#define echoPin 13
+#define DHT11_PIN 7
+#define ledPin_1 A1
+#define ledPin_2 8
+char ch;
+int Contrast=30,i,j;
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+dht DHT;
+
+void setup() {
+
+//display
+
+  Serial.begin(9600);
+
+  analogWrite(6,Contrast);
+  
+ 
+  // set up the LCD's number of columns and rows: 
+  lcd.begin(16, 2);
+
+
+  //sensor
+  Serial.begin (9600);
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  pinMode(ledPin_1, OUTPUT);
+  pinMode(ledPin_2, OUTPUT);
+  
+}
+
+void loop() {
+
+
+//display
+
+for(i=0;i<100;i++)
+  {
+   for(j=0;j<4;j++)
+   {
+    
+
+
+
+//senser
+
+
+  
+  float duration, distance;
+  float speed;
+  
+  digitalWrite(trigPin, LOW); 
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  
+  duration = pulseIn(echoPin, HIGH);
+  speed = 331.4 + (0.606 * DHT.temperature) + (0.0124 * DHT.humidity);
+  distance = 15-((duration / 2) * (speed / 10000));
+  
+  if (distance >= 5 || distance <= 1){
+    Serial.print("Distance = ");
+    Serial.println("Out of range");
+    digitalWrite(ledPin_1, HIGH);
+    //delay(200);
+    
+    
+  }
+  else {
+    Serial.print("Distance = ");
+    Serial.print(distance);
+    Serial.println(" cm");
+    digitalWrite(ledPin_2, HIGH);
+      delay(5);
+    
+      delay(5);
+  
+  }
+  
+
+
+//display
+if (distance >= 5 || distance <= 1){
+if(j == 0)
+    {
+      lcd.print("   ..WELCOME..");
+      lcd.setCursor(0, 1);
+      lcd.print(" **************");
+      delay(3000);
+      lcd.clear();
+    }
+    else if(j == 1)
+    {
+      lcd.print(" !!!AUTOMATIC!!!");
+      lcd.setCursor(0, 1);
+      lcd.print(" PARKING SYSTEM");
+      delay(4000);
+      lcd.clear();
+    }
+  else if(j == 2)
+    {
+      lcd.print("FINALPROJECT2018");
+      lcd.setCursor(0, 1);
+      lcd.print("   SSE-CS DEPT   ");
+      delay(4000);
+      lcd.clear();
+    }
+   else if(j == 3)
+    {
+      lcd.print("THANKS FOR");
+      lcd.setCursor(0, 1);
+      lcd.print("        VISITING");
+      delay(3000);
+      lcd.clear();
+    } 
+}
+
+else
+{
+  lcd.print("HORIZONTAL WIDTH");
+      lcd.setCursor(0, 1);
+      lcd.print("OF CAR IS ");
+      lcd.print(distance);
+      lcd.print("CM");
+      delay(1000);
+      lcd.clear();
+
+  
+}
+
+   delay(5);
+  digitalWrite(ledPin_1, LOW);
+  digitalWrite(ledPin_2, LOW);
+    
+    
+   }
+
+  
+  
+     
+  }
+
+
+  
+}
